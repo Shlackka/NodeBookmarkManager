@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3 uid="uid://fr5x2sof4r42"]
+
+[ext_resource type="Script" uid="uid://de5ukjowqoqpe" path="res://addons/node_bookmarker/BookmarkDock.gd" id="1_tqy63"]
+
+[node name="Boomarked Nodes" type="VBoxContainer"]
+script = ExtResource("1_tqy63")
+
+[node name="Bookmarked Nodes" type="Label" parent="."]
+layout_mode = 2
+
+[node name="Tree" type="Tree" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_stretch_ratio = 2.0
+
+[node name="AddBookmarkButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Add Selected Node"
+
+[node name="RemoveBookmarkButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Remove Selected Node
+"
+
+[connection signal="item_selected" from="Tree" to="." method="_on_tree_item_selected"]
+[connection signal="pressed" from="HBoxContainer/AddBookmarkButton" to="." method="_on_add_bookmark_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/RemoveBookmarkButton" to="." method="_on_remove_bookmark_button_pressed"]
