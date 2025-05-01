@@ -13,10 +13,23 @@ func _ready():
 	root.set_text(0, "Bookmarks")
 
 func add_bookmark(name: String, node_path: NodePath):
+	# Check for duplicates first
 	var root = bookmark_tree.get_root()
+	if not root:
+		return
+
+	var current = root.get_first_child()
+	while current:
+		if current.get_metadata(0) == node_path:
+			print("Node already bookmarked:", node_path)
+			return
+		current = current.get_next()
+
+	# Add if not duplicate
 	var item = bookmark_tree.create_item(root)
 	item.set_text(0, name)
 	item.set_metadata(0, node_path)
+
 
 func _on_tree_item_selected():
 	var selected = bookmark_tree.get_selected()
