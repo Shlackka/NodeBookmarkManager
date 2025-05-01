@@ -1,6 +1,9 @@
+LineEdit
+AcceptDialog
+PopupMenu
 Node2D
-HBoxContainer
 Button
+HBoxContainer
 AnimationPlayer
 Tree
 Label

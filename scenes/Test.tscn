@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bpsxdu8t3nf6u"]
+
+[node name="Test" type="Node2D"]
+
+[node name="Boss" type="Node2D" parent="."]
+position = Vector2(184, 196)
+metadata/bookmark_id = "554712446_Boss"
+
+[node name="Badman" type="Node2D" parent="."]
+position = Vector2(226, 116)
+metadata/bookmark_id = "557751663_Badman"

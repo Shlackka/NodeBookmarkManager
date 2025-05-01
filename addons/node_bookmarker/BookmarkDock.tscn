@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://de5ukjowqoqpe" path="res://addons/node_bookmarker/BookmarkDock.gd" id="1_tqy63"]
 
-[node name="Boomarked Nodes" type="VBoxContainer"]
+[node name="Bookmarked Nodes" type="VBoxContainer"]
 script = ExtResource("1_tqy63")
 
 [node name="Bookmarked Nodes" type="Label" parent="."]
@@ -27,6 +27,25 @@ size_flags_horizontal = 3
 text = "Remove Selected Node
 "
 
+[node name="ReloadButton" type="Button" parent="HBoxContainer"]
+layout_mode = 2
+text = "Reload Bookmarks"
+
+[node name="ContextMenu" type="PopupMenu" parent="."]
+item_count = 2
+item_0/text = "Rename"
+item_0/id = 0
+item_1/text = "Remove"
+item_1/id = 1
+
+[node name="RenameDialog" type="AcceptDialog" parent="."]
+
+[node name="LineEdit" type="LineEdit" parent="RenameDialog"]
+offset_right = 68.5625
+offset_bottom = 31.0
+
 [connection signal="item_selected" from="Tree" to="." method="_on_tree_item_selected"]
 [connection signal="pressed" from="HBoxContainer/AddBookmarkButton" to="." method="_on_add_bookmark_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/RemoveBookmarkButton" to="." method="_on_remove_bookmark_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/ReloadButton" to="." method="_on_reload_button_pressed"]
+[connection signal="confirmed" from="RenameDialog" to="." method="_on_rename_dialog_confirmed"]

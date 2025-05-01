@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://cjtfabriiwuim"]
+
+[node name="Test Number 3" type="Node2D"]
+
+[node name="Goodman" type="Node2D" parent="."]
+
+[node name="Hero" type="Node2D" parent="."]

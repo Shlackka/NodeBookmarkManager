@@ -24,3 +24,7 @@ func _on_add_bookmark_pressed():
 	var node = selection[0]
 	var node_path = node.get_path()
 	dock.add_bookmark(node.name, node_path)
+
+func _edit(_object):
+	if dock:
+		dock.load_bookmarks_for_scene()

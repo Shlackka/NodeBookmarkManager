@@ -1,9 +1,5 @@
-res://addons/node_bookmarker/plugin.cfg
-res://addons/node_bookmarker/BookmarkDock.tscn
+res://scenes/test_number_3.tscn
 res://addons/node_bookmarker/BookmarkDock.gd
-res://addons/node_bookmarker/NodeBookmarkerPlugin.gd
-res://addons/node_bookmarker/Bookmarked Nodes.tscn
-res://addons/node_bookmarker/NodeBookmarkPlugin.gd
 res://scenes/main.tscn
-res://README.md
-res://LICENSE.txt
+res://scenes/Test.tscn
+res://addons/node_bookmarker/BookmarkDock.tscn
