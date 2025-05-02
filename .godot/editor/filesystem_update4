@@ -3,3 +3,4 @@ res://addons/node_bookmarker/BookmarkDock.gd
 res://addons/node_bookmarker/BookmarkDock.tscn
 res://scenes/Test.tscn
 res://scenes/test_number_3.tscn
+res://addons/node_bookmarker/NodeBookmarkPlugin.gd

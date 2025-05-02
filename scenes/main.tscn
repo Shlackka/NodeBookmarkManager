@@ -7,5 +7,5 @@ position = Vector2(333, 151)
 metadata/bookmark_id = "539567959_Player"
 
 [node name="Enemy" type="Node2D" parent="."]
-position = Vector2(139, 265)
+position = Vector2(149, 275)
 metadata/bookmark_id = "545140696_Enemy"

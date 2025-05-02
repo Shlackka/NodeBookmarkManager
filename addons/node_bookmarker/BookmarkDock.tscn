@@ -39,6 +39,7 @@ item_1/text = "Remove"
 item_1/id = 1
 
 [node name="RenameDialog" type="AcceptDialog" parent="."]
+title = "Rename"
 
 [node name="LineEdit" type="LineEdit" parent="RenameDialog"]
 offset_right = 68.5625

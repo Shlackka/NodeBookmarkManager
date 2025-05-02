@@ -11,7 +11,6 @@ extends VBoxContainer
 
 var editor_interface: EditorInterface
 var pending_rename_item: TreeItem = null
-var fallback_scene_key: String = ""
 
 func _ready():
 	bookmark_tree.clear()
@@ -22,12 +21,12 @@ func _ready():
 	var scene_root = get_tree().edited_scene_root
 	if scene_root:
 		scene_root.connect("tree_exited", Callable(self, "_on_node_removed"), CONNECT_DEFERRED)
+		scene_root.connect("ready", Callable(self, "_on_scene_loaded"), CONNECT_DEFERRED)
 
 	load_bookmarks_for_scene()
-	
+
 	context_menu.connect("id_pressed", Callable(self, "_on_context_menu_pressed"))
 	bookmark_tree.connect("gui_input", Callable(self, "_on_tree_gui_input"))
-
 
 func add_bookmark(name: String, node_path: NodePath, locked := false):
 	var scene_root = get_tree().edited_scene_root
@@ -61,24 +60,6 @@ func add_bookmark(name: String, node_path: NodePath, locked := false):
 	})
 
 	_save_current_bookmarks()
-
-func _on_tree_item_selected():
-	var selected = bookmark_tree.get_selected()
-	if not selected:
-		return
-
-	var meta = selected.get_metadata(0)
-	if typeof(meta) != TYPE_DICTIONARY or not meta.has("path"):
-		return
-
-	var node_path = meta["path"]
-	var scene_root = get_tree().edited_scene_root
-	if not scene_root:
-		return
-
-	var target_node = scene_root.get_node_or_null(node_path)
-	if target_node:
-		editor_interface.edit_node(target_node)
 
 func _on_add_bookmark_button_pressed():
 	var selection = editor_interface.get_selection().get_selected_nodes()
@@ -118,22 +99,30 @@ func _get_save_path() -> String:
 func _get_scene_key() -> String:
 	var scene = get_tree().edited_scene_root
 	if scene and scene.scene_file_path != "":
-		fallback_scene_key = scene.scene_file_path
-		return fallback_scene_key
-	return fallback_scene_key
+		return scene.scene_file_path
+	return ""
 
 func _load_bookmarks() -> Dictionary:
 	var path = _get_save_path()
+
 	if not FileAccess.file_exists(path):
 		return {}
 
 	var file = FileAccess.open(path, FileAccess.READ)
-	if file:
-		var content = file.get_as_text()
-		var result = JSON.parse_string(content)
-		if typeof(result) == TYPE_DICTIONARY:
-			return result
-	return {}
+	if not file:
+		push_error("Failed to open bookmark file.")
+		return {}
+
+	var content = file.get_as_text()
+	var result = JSON.parse_string(content)
+
+	if result == null or typeof(result) != TYPE_DICTIONARY:
+		push_warning("Bookmark file is invalid. Backing up and starting fresh.")
+		var corrupt_backup = path + ".corrupt_" + str(Time.get_unix_time_from_system())
+		FileAccess.open(corrupt_backup, FileAccess.WRITE).store_string(content)
+		return {}
+
+	return result
 
 func _save_bookmarks(data: Dictionary) -> void:
 	var file = FileAccess.open(_get_save_path(), FileAccess.WRITE)
@@ -217,7 +206,6 @@ func _process(_delta):
 					item.set_metadata(0, meta)
 		item = item.get_next()
 
-
 func _on_tree_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 		var click_pos = event.position
@@ -226,7 +214,6 @@ func _on_tree_gui_input(event: InputEvent) -> void:
 			clicked_item.select(0)
 			context_menu.set_position(get_viewport().get_mouse_position())
 			context_menu.popup()
-
 
 func _on_context_menu_pressed(id: int) -> void:
 	var selected = bookmark_tree.get_selected()
@@ -244,6 +231,8 @@ func _show_rename_dialog(item: TreeItem):
 	pending_rename_item = item
 	rename_input.text = item.get_text(0)
 	rename_dialog.popup_centered()
+	rename_input.grab_focus()
+	rename_input.select_all()
 
 func _on_rename_dialog_confirmed() -> void:
 	if pending_rename_item == null:
@@ -266,3 +255,6 @@ func _on_rename_dialog_confirmed() -> void:
 	print("Renamed to:", new_name)
 
 	_save_current_bookmarks()
+	
+func _on_scene_loaded():
+	load_bookmarks_for_scene()
