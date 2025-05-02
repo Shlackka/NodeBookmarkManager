@@ -29,7 +29,7 @@ func _ready():
 	bookmark_tree.connect("gui_input", Callable(self, "_on_tree_gui_input"))
 
 
-func add_bookmark(name: String, node_path: NodePath):
+func add_bookmark(name: String, node_path: NodePath, locked := false):
 	var scene_root = get_tree().edited_scene_root
 	if not scene_root:
 		return
@@ -56,7 +56,8 @@ func add_bookmark(name: String, node_path: NodePath):
 	new_item.set_metadata(0, {
 		"path": node_path,
 		"id": bookmark_id,
-		"name": name
+		"name": name,
+		"locked": locked
 	})
 
 	_save_current_bookmarks()
@@ -192,7 +193,7 @@ func load_bookmarks_for_scene():
 			found_node = scene_root.get_node(saved["path"])
 
 		if found_node:
-			add_bookmark(saved["name"], found_node.get_path())
+			add_bookmark(saved["name"], found_node.get_path(), true)
 			
 func _process(_delta):
 	var scene_root = get_tree().edited_scene_root
@@ -207,13 +208,15 @@ func _process(_delta):
 	while item:
 		var meta = item.get_metadata(0)
 		if typeof(meta) == TYPE_DICTIONARY:
-			var path: NodePath = meta.get("path", "")
-			var node = scene_root.get_node_or_null(path)
-			if node and node.name != item.get_text(0):
-				item.set_text(0, node.name)
-				meta["name"] = node.name
-				item.set_metadata(0, meta)
+			if meta.get("locked", false) == false:
+				var path: NodePath = meta.get("path", "")
+				var node = scene_root.get_node_or_null(path)
+				if node and node.name != item.get_text(0):
+					item.set_text(0, node.name)
+					meta["name"] = node.name
+					item.set_metadata(0, meta)
 		item = item.get_next()
+
 
 func _on_tree_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:

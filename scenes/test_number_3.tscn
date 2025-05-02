@@ -3,5 +3,7 @@
 [node name="Test Number 3" type="Node2D"]
 
 [node name="Goodman" type="Node2D" parent="."]
+metadata/bookmark_id = "305578315_Goodman"
 
 [node name="Hero" type="Node2D" parent="."]
+metadata/bookmark_id = "305585072_Hero"
