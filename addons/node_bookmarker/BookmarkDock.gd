@@ -27,6 +27,7 @@ func _ready():
 
 	context_menu.connect("id_pressed", Callable(self, "_on_context_menu_pressed"))
 	bookmark_tree.connect("gui_input", Callable(self, "_on_tree_gui_input"))
+	rename_input.connect("text_submitted", Callable(self, "_on_rename_text_submitted"))
 
 func add_bookmark(name: String, node_path: NodePath, locked := false):
 	var scene_root = get_tree().edited_scene_root
@@ -60,6 +61,24 @@ func add_bookmark(name: String, node_path: NodePath, locked := false):
 	})
 
 	_save_current_bookmarks()
+
+func _on_tree_item_selected():
+	var selected = bookmark_tree.get_selected()
+	if not selected:
+		return
+
+	var meta = selected.get_metadata(0)
+	if typeof(meta) != TYPE_DICTIONARY or not meta.has("path"):
+		return
+
+	var node_path = meta["path"]
+	var scene_root = get_tree().edited_scene_root
+	if not scene_root:
+		return
+
+	var target_node = scene_root.get_node_or_null(node_path)
+	if target_node:
+		editor_interface.edit_node(target_node)
 
 func _on_add_bookmark_button_pressed():
 	var selection = editor_interface.get_selection().get_selected_nodes()
@@ -258,3 +277,7 @@ func _on_rename_dialog_confirmed() -> void:
 	
 func _on_scene_loaded():
 	load_bookmarks_for_scene()
+
+func _on_rename_text_submitted(new_text: String):
+	_on_rename_dialog_confirmed()
+	rename_dialog.hide()
